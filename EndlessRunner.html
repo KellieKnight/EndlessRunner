@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+
+  
+  
+
+  
+  
+  
+
+  
+
+  <script type="text/javascript" src="/js/lib/dummy.js"></script>
+
+  
+
+  
+
+  
+
+  
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  
+
+  
+
+  <style type="text/css">
+    * {
+  cursor: none;
+}
+
+  </style>
+
+  <title>Endless Runner by keeknigh</title>
+
+  
+    
+
+
+
+
+<script type="text/javascript">//<![CDATA[
+window.onload=function(){
+var canvas = document.getElementById("endless_runner");
+
+var context = canvas.getContext("2d");
+
+canvas.addEventListener("mousemove", onmousemove);
+
+var obstacles = []; //obstacles will be particles flying at the player
+
+var lives = 3;
+var score = 0;
+var highScore = 0;
+
+var collision = false;
+
+var radius = 10;
+
+var invTimer = 0;
+
+var mouseX = 0;
+var mouseY = 0;
+
+var newX = 0;
+var newY = 0;
+
+function Obstacle(x, y, speed, lifetime) {
+  this.x = x;
+  this.y = y;
+  this.radius = radius;
+  this.speed = speed;
+  this.lifetime = lifetime;
+}
+
+
+function particle_system(numParticles) {
+  for (var iter = 0; iter < numParticles; iter++) {
+    obstacles.push(new Obstacle(600, Math.random() * canvas.height, -10 + Math.random(), Math.random() * 10));
+  }
+}
+
+
+function checkBounds(object, mx, my) {
+
+  var x = object.x - mx;
+  var y = object.y - my;
+
+  var ptDist = (x * x) + (y * y);
+
+  if (ptDist < (object.radius * object.radius)) {
+    //collision = true;
+    return true;
+  }
+
+  return false;
+}
+
+
+particle_system(15);
+
+function draw() {
+
+
+	//background color
+  canvas.width = canvas.width;
+  context.fillStyle = "#9EE7FF";
+  context.fillRect(0, 0, canvas.width, canvas.height); //fill background
+  context.fill();
+
+
+  //draw player pixel
+
+  context.fillStyle = "#FF30CC";
+  context.fillRect(mouseX, mouseY, 5, 5);
+
+
+  //draw particles
+  for (var iter = 0; iter < obstacles.length; iter++) {
+    var par = obstacles[iter];
+
+    if (par.lifetime > 0 || par.x > 0) {
+
+      context.fillStyle = "#3064FF"; //circle fill
+      context.beginPath();
+      context.arc(par.x, par.y, par.radius, Math.PI * 2, false);
+      context.strokeStyle = "#A6C8FF"; //circle outline
+      context.stroke();
+      context.fill();
+      par.x -= par.radius * Math.random();
+      // score++;
+
+
+    } else {
+      par.x = 600;
+      par.lifetime = 10;
+      par.y = Math.random() * canvas.height;
+      par.radius += 0.2; //gradually increase radius
+    }
+
+    //par.x-=par.radius*Math.random();
+    par.lifetime--;
+
+
+
+
+
+  }
+
+
+  //draw text (current score, high score, lives)
+
+  context.font = "11pt Calibri";
+  context.strokeStyle = "blue";
+  context.strokeText("Distance: " + score, 0, 15);
+
+  context.font = "11pt Calibri";
+  context.strokeStyle = "blue";
+  context.strokeText("Longest Distance: " + highScore, 125, 15);
+
+  context.font = "11pt Calibri";
+  context.strokeStyle = "blue";
+  context.strokeText("Lives: " + lives, 300, 15);
+
+
+}
+
+
+function update() {
+
+  if (invTimer > 0) {
+    invTimer--;
+  }
+
+
+  //Score (distance) counter
+  for (var iter = 500; iter >= 0; iter--) {
+    if (iter == 0) {
+      score++;
+    }
+  }
+
+
+
+  //check for collision
+  for (var i = 0; i < obstacles.length; i++) {
+    if (checkBounds(obstacles[i], mouseX, mouseY)) {
+      if (lives > 0 && invTimer == 0) { //decrement live count if there is a collision
+        lives--;
+        invTimer = 10; //set an invincibility timer so player cant get hit right away again
+      }
+    }
+
+
+    //check when lives run out
+    if (lives == 0) { //game over when lives = 0
+
+
+
+      if (score > highScore) { //update high score
+        highScore = score;
+      }
+
+      //reset lives and score
+      score = 0;
+      lives = 3;
+
+      //reset particles
+      obstacles = [];
+      particle_system(15);
+    }
+  }
+
+
+
+  console.log(collision);
+  console.log(lives);
+  console.log(highScore);
+
+}
+
+
+
+function onmousemove(e) {
+
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+
+}
+
+
+
+function gameLoop() {
+
+  draw();
+  update();
+
+}
+
+
+
+
+setInterval(gameLoop, 25);
+
+}//]]> 
+
+</script>
+
+  
+</head>
+
+<body>
+  <canvas id="endless_runner" width="600" height="400">
+</canvas>
+
+  
+  <script>
+  // tell the embed parent frame the height of the content
+  if (window.parent && window.parent.parent){
+    window.parent.parent.postMessage(["resultsFrame", {
+      height: document.body.getBoundingClientRect().height,
+      slug: "oz7r79ju"
+    }], "*")
+  }
+</script>
+
+</body>
+
+</html>
+
